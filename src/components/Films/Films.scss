@@ -1,0 +1,30 @@
+.film-container {
+    display        : flex;
+    flex-wrap      : wrap;
+    justify-content: center;
+
+    .film {
+        width     : 30%;
+        margin-top: 3%;
+        text-align: center;
+
+        img {
+            height: 60vh;
+        }
+
+        .detail {
+            background-color: black;
+            color           : white;
+        }
+
+        .team {
+            color        : gray;
+            border-bottom: none;
+        }
+
+        .name {
+            font-weight  : 700;
+            border-bottom: none;
+        }
+    }
+}

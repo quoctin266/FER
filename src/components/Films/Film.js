@@ -3,8 +3,18 @@ import ListGroup from "react-bootstrap/ListGroup";
 import "./Films.scss";
 import { Container } from "react-bootstrap";
 import { Films } from "../../shared/ListOfFilms";
+import { useState } from "react";
+import Modal from "react-bootstrap/Modal";
 
 export default function Film(props) {
+  const [selected, setSelected] = useState("");
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = (film) => {
+    setSelected(film);
+    setShow(true);
+  };
   const listFilms = Films;
 
   return (
@@ -24,8 +34,11 @@ export default function Film(props) {
                     <ListGroup.Item className="team">
                       {film.year}
                     </ListGroup.Item>
-                    <ListGroup.Item className="detail">
-                      {film.nation}
+                    <ListGroup.Item
+                      className="detail"
+                      onClick={() => handleShow(film)}
+                    >
+                      Detail
                     </ListGroup.Item>
                   </ListGroup>
                 </Card>
@@ -33,6 +46,18 @@ export default function Film(props) {
             );
           })}
       </div>
+      <Modal show={show} onHide={handleClose} className="film-modal">
+        <Modal.Header closeButton>
+          <img src={selected.img} alt="preview" />
+        </Modal.Header>
+        <Modal.Body>
+          <Modal.Title>Title: {selected.title}</Modal.Title>
+          <div className="detail">
+            Publish: {selected.year} &nbsp; &nbsp; &nbsp; Nation:{" "}
+            {selected.nation}
+          </div>
+        </Modal.Body>
+      </Modal>
     </Container>
   );
 }

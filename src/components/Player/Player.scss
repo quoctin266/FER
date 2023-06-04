@@ -25,28 +25,30 @@
     }
 }
 
-.modal-content {
-    .modal-header {
-        border-bottom : none;
-        padding       : 10px;
-        padding-bottom: 0;
+.player-modal {
+    .modal-content {
+        .modal-header {
+            border-bottom : none;
+            padding       : 10px;
+            padding-bottom: 0;
 
-        img {
-            width        : 100%;
-            border-radius: 5px;
+            img {
+                width        : 100%;
+                border-radius: 5px;
+            }
+
+            .btn-close {
+                position: absolute;
+                top     : 30px;
+                right   : 30px;
+                color   : #321515;
+            }
         }
 
-        .btn-close {
-            position: absolute;
-            top     : 30px;
-            right   : 30px;
-            color   : #321515;
-        }
-    }
-
-    .modal-body {
-        .modal-title {
-            margin-bottom: 30px;
+        .modal-body {
+            .modal-title {
+                margin-bottom: 30px;
+            }
         }
     }
 }

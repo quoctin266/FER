@@ -28,3 +28,43 @@
         }
     }
 }
+
+.film-modal {
+    .modal-content {
+        .modal-header {
+            border-bottom : none;
+            padding       : 10px;
+            padding-bottom: 0;
+
+            img {
+                width        : 100%;
+                border-radius: 5px;
+            }
+
+            .btn-close {
+                position: absolute;
+                top     : 30px;
+                right   : 30px;
+                color   : #321515;
+            }
+        }
+
+        .modal-body {
+            .modal-title {
+                margin-bottom   : 30px;
+                margin-top      : 20px;
+                background-color: black;
+                color           : white;
+                padding         : 2%;
+                border-radius   : 15px;
+                padding-left    : 5%;
+            }
+
+            .detail {
+                font-weight  : 500;
+                font-size    : 1.2em;
+                margin-bottom: 30px;
+            }
+        }
+    }
+}

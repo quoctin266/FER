@@ -45,7 +45,7 @@ const Player = (props) => {
             );
           })}
       </div>
-      <Modal show={show} onHide={handleClose}>
+      <Modal show={show} onHide={handleClose} className="player-modal">
         <Modal.Header closeButton>
           <img src={preview.img} alt="player-preview" />
         </Modal.Header>

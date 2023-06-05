@@ -41,6 +41,9 @@ function NavBar() {
             <NavLink to="/contact" className="nav-link">
               Contact
             </NavLink>
+            <NavLink to="/about" className="nav-link">
+              About
+            </NavLink>
           </Nav>
           <Nav>
             <Nav.Link onClick={toogleTheme}>Toogle theme</Nav.Link>

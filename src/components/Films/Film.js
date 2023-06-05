@@ -3,19 +3,11 @@ import ListGroup from "react-bootstrap/ListGroup";
 import "./Films.scss";
 import { Container } from "react-bootstrap";
 import { Films } from "../../shared/ListOfFilms";
-import { useState } from "react";
-import Modal from "react-bootstrap/Modal";
+import { useNavigate } from "react-router-dom/dist";
 
 export default function Film(props) {
-  const [selected, setSelected] = useState("");
-  const [show, setShow] = useState(false);
-
-  const handleClose = () => setShow(false);
-  const handleShow = (film) => {
-    setSelected(film);
-    setShow(true);
-  };
   const listFilms = Films;
+  const navigate = useNavigate();
 
   return (
     <Container>
@@ -36,7 +28,11 @@ export default function Film(props) {
                     </ListGroup.Item>
                     <ListGroup.Item
                       className="detail"
-                      onClick={() => handleShow(film)}
+                      onClick={() => {
+                        navigate(`/detail/${film.id}`, {
+                          state: { detail: film },
+                        });
+                      }}
                     >
                       Detail
                     </ListGroup.Item>
@@ -46,18 +42,6 @@ export default function Film(props) {
             );
           })}
       </div>
-      <Modal show={show} onHide={handleClose} className="film-modal">
-        <Modal.Header closeButton>
-          <img src={selected.img} alt="preview" />
-        </Modal.Header>
-        <Modal.Body>
-          <Modal.Title>Title: {selected.title}</Modal.Title>
-          <div className="detail">
-            Publish: {selected.year} &nbsp; &nbsp; &nbsp; Nation:{" "}
-            {selected.nation}
-          </div>
-        </Modal.Body>
-      </Modal>
     </Container>
   );
 }

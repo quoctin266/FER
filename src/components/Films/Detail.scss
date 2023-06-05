@@ -1,0 +1,12 @@
+.detail-container {
+    .film-card {
+        width         : 70%;
+        display       : flex;
+        flex-direction: row;
+        margin        : 5% auto;
+
+        .card-img-top {
+            width: 30%;
+        }
+    }
+}

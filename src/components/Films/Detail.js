@@ -2,8 +2,15 @@ import { useLocation } from "react-router-dom/dist";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "./Detail.scss";
+import Modal from "react-bootstrap/Modal";
+import { useState } from "react";
 
 const Detail = () => {
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
   const location = useLocation();
   const film = location.state.detail;
   return (
@@ -11,12 +18,37 @@ const Detail = () => {
       <Card className="film-card">
         <Card.Img variant="top" src={film.img} />
         <Card.Body>
-          <Card.Title>{film.title}</Card.Title>
+          <Card.Title className="film-title">{film.title}</Card.Title>
           <Card.Text>
-            Some quick example text to build on the card title and make up the
-            bulk of the card's content.
+            <div className="year">Release year: {film.year}</div>
+            <div className="country">Country of origin: {film.nation}</div>
+            <div className="info-title">Storyline</div>
+            <div className="info">{film.info}</div>
           </Card.Text>
-          <Button variant="primary">Go somewhere</Button>
+          <Button variant="warning" onClick={handleShow}>
+            Watch trailer
+          </Button>
+          <Modal
+            show={show}
+            onHide={handleClose}
+            size="lg"
+            backdrop="static"
+            className="film-modal"
+          >
+            <Modal.Header closeButton>
+              <Modal.Title>Movie Trailer</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              <iframe
+                style={{ width: "100%", height: "44vh", borderRadius: "15px" }}
+                src={film.trailer}
+                title={film.title}
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                allowfullscreen
+              ></iframe>
+            </Modal.Body>
+          </Modal>
         </Card.Body>
       </Card>
     </div>

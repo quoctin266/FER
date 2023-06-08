@@ -12,15 +12,15 @@ import {
 function NavBar() {
   const [isDark, setIsDark] = useState(true);
   const dispatch = useDispatch();
-  const background = useSelector((state) => state.theme.background);
+  const background = useSelector((state) => state.theme.headerBackground);
 
   useEffect(() => {
     background === "dark" ? setIsDark(true) : setIsDark(false);
   }, [background]);
 
   const toogleTheme = () => {
-    if (isDark) dispatch(changeThemeLight());
-    else dispatch(changeThemeDark());
+    if (isDark) dispatch(changeThemeDark());
+    else dispatch(changeThemeLight());
   };
 
   return (

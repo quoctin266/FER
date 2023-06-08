@@ -1,9 +1,5 @@
 @import "~bootstrap/scss/bootstrap";
 
-.App {
-  background-color: #c7c7c7;
-}
-
 .App-logo {
   height        : 40vmin;
   pointer-events: none;
@@ -37,5 +33,20 @@
 
   to {
     transform: rotate(360deg);
+  }
+}
+
+.film-modal {
+  .modal-header {
+    background-color: #2d2d2d;
+    color           : white;
+
+    .btn-close {
+      background-color: white;
+    }
+  }
+
+  .modal-body {
+    background-color: #fffffff5;
   }
 }

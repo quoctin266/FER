@@ -7,7 +7,7 @@ import { BiNews } from "react-icons/bi";
 const About = () => {
   return (
     <div className="about-container">
-      <Accordion defaultActiveKey="0" alwaysOpen>
+      <Accordion defaultActiveKey={["0"]} alwaysOpen>
         <Accordion.Item eventKey="0">
           <Accordion.Header>
             <HiUsers /> &nbsp; THE TEAM

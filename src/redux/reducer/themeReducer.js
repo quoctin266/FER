@@ -1,23 +1,26 @@
 import { CHANGE_THEME_DARK, CHANGE_THEME_LIGHT } from "../type/types";
 
 const INITIAL_STATE = {
-  background: "dark",
+  headerBackground: "dark",
+  background: "#c7c7c7",
   color: "light",
 };
 
 const themeReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
-    case CHANGE_THEME_DARK:
-      return {
-        ...state,
-        background: "dark",
-        color: "light",
-      };
-
     case CHANGE_THEME_LIGHT:
       return {
         ...state,
-        background: "light",
+        headerBackground: "dark",
+        background: "#c7c7c7",
+        color: "light",
+      };
+
+    case CHANGE_THEME_DARK:
+      return {
+        ...state,
+        headerBackground: "light",
+        background: "#1c1c1c",
         color: "dark",
       };
 

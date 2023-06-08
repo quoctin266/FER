@@ -3,10 +3,13 @@ import "./App.scss";
 import Footer from "./components/Footer/Footer";
 import NavBar from "./components/Header/NavBar";
 import { Scrollbars } from "react-custom-scrollbars-2";
+import { useSelector } from "react-redux";
 
 function App() {
+  const background = useSelector((state) => state.theme.background);
+
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: background }}>
       <NavBar />
       <Scrollbars
         style={{ height: "91vh" }}

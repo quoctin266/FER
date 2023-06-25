@@ -13,3 +13,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.player-profile {
+  display      : flex;
+  gap          : 20px;
+  padding-right: 2%;
+  margin-bottom: 3%;
+
+  img {
+    width: 40%;
+  }
+
+  .des {
+    text-align: justify;
+  }
+}

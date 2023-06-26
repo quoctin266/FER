@@ -1,33 +1,20 @@
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
-import axios from "axios";
 import { useState } from "react";
 import "./Login.scss";
 import { useNavigate } from "react-router-dom";
-import {
-  GoogleAuthProvider,
-  signInWithPopup,
-  signOut,
-  onAuthStateChanged,
-} from "firebase/auth";
-import { auth } from "../../firebase";
+import GoogleSignIn from "./GoogleSignIn";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
 
   const navigate = useNavigate();
-  const handleLogin = async () => {
-    let res = await axios.post("http://localhost:8080/login", {
-      name: name,
-      email: email,
-    });
-    console.log("check res", res);
-  };
 
   return (
     <>
       <Form className="login-form">
+        <div className="title">Login Now</div>
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -37,7 +24,6 @@ const Login = () => {
             onChange={(e) => setEmail(e.target.value)}
           />
         </Form.Group>
-
         <Form.Group className="mb-3" controlId="formBasicName">
           <Form.Label>Password</Form.Label>
           <Form.Control
@@ -47,18 +33,21 @@ const Login = () => {
             onChange={(e) => setName(e.target.value)}
           />
         </Form.Group>
-
-        <Button variant="light" onClick={() => navigate("/")}>
-          Back
-        </Button>
-        <Button
-          variant="primary"
-          type="button"
-          onClick={handleLogin}
-          className="mx-2"
-        >
+        <Button variant="dark" type="button" className="mb-3 login-btn">
           Login
-        </Button>
+        </Button>{" "}
+        <div className="or">Or connect with social media</div>
+        <GoogleSignIn />
+        <br />
+        <div className="back-btn">
+          <span
+            onClick={() => {
+              navigate("/");
+            }}
+          >
+            &lt;&lt; Go To HomePage
+          </span>
+        </div>
       </Form>
     </>
   );

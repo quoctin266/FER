@@ -10,6 +10,7 @@ import ManagePlayer from "../manage/ManagePlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "../auth/Login";
+import Private from "../auth/Private";
 
 const router = createBrowserRouter([
   {
@@ -41,8 +42,12 @@ const router = createBrowserRouter([
         element: <About />,
       },
       {
-        path: "/manage",
-        element: <ManagePlayer />,
+        path: "/dashboard",
+        element: (
+          <Private>
+            <ManagePlayer />
+          </Private>
+        ),
       },
     ],
   },

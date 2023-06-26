@@ -9,6 +9,7 @@ import Detail from "../Films/Detail";
 import ManagePlayer from "../manage/ManagePlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Login from "../auth/Login";
 
 const router = createBrowserRouter([
   {
@@ -44,6 +45,10 @@ const router = createBrowserRouter([
         element: <ManagePlayer />,
       },
     ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
   },
 ]);
 

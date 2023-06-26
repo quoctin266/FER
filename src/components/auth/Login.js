@@ -2,11 +2,21 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import axios from "axios";
 import { useState } from "react";
+import "./Login.scss";
+import { useNavigate } from "react-router-dom";
+import {
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+} from "firebase/auth";
+import { auth } from "../../firebase";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
 
+  const navigate = useNavigate();
   const handleLogin = async () => {
     let res = await axios.post("http://localhost:8080/login", {
       name: name,
@@ -17,7 +27,7 @@ const Login = () => {
 
   return (
     <>
-      <Form>
+      <Form className="login-form">
         <Form.Group className="mb-3" controlId="formBasicEmail">
           <Form.Label>Email address</Form.Label>
           <Form.Control
@@ -26,23 +36,28 @@ const Login = () => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
         </Form.Group>
 
         <Form.Group className="mb-3" controlId="formBasicName">
-          <Form.Label>Name</Form.Label>
+          <Form.Label>Password</Form.Label>
           <Form.Control
-            type="text"
-            placeholder="Name"
+            type="password"
+            placeholder="Password"
             value={name}
             onChange={(e) => setName(e.target.value)}
           />
         </Form.Group>
 
-        <Button variant="primary" type="button" onClick={handleLogin}>
-          Submit
+        <Button variant="light" onClick={() => navigate("/")}>
+          Back
+        </Button>
+        <Button
+          variant="primary"
+          type="button"
+          onClick={handleLogin}
+          className="mx-2"
+        >
+          Login
         </Button>
       </Form>
     </>

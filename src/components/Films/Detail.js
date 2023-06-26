@@ -40,7 +40,7 @@ const Detail = () => {
             </Modal.Header>
             <Modal.Body>
               <iframe
-                style={{ width: "100%", height: "44vh", borderRadius: "15px" }}
+                style={{ width: "100%", height: "60vh", borderRadius: "15px" }}
                 src={film.trailer}
                 title={film.title}
                 frameborder="0"

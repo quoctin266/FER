@@ -50,6 +50,9 @@ function NavBar() {
           </Nav>
           <Nav>
             <Nav.Link onClick={toogleTheme}>Toogle theme</Nav.Link>
+            <NavLink to="/login" className="nav-link">
+              Login
+            </NavLink>
           </Nav>
         </Container>
       </Navbar>

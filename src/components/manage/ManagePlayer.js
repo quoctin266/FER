@@ -135,7 +135,7 @@ const ManagePlayer = () => {
         <Button variant="primary" className="mb-3" onClick={handleShowAdd}>
           Add new
         </Button>
-        <Table striped bordered hover>
+        <Table striped hover>
           <thead>
             <tr>
               <th>Name</th>

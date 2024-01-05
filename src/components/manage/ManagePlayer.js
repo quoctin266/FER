@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { toast } from "react-toastify";
 import EditForm from "./EditForm";
+import { getAllPlayer } from "../../service/playerService";
 
 const ManagePlayer = () => {
   const [listPlayer, setListPlayer] = useState([]);
@@ -113,10 +114,8 @@ const ManagePlayer = () => {
 
   const fetchAllPlayer = async () => {
     try {
-      let res = await axios.get(
-        "https://6497076483d4c69925a3560d.mockapi.io/api/v1/demoAPI"
-      );
-      if (res?.data) {
+      let res = await getAllPlayer();
+      if (res?.status === 200) {
         setListPlayer(res.data);
       }
     } catch (e) {
@@ -141,7 +140,7 @@ const ManagePlayer = () => {
               <th>Name</th>
               <th>Nation</th>
               <th>Club</th>
-              <th>Cost</th>
+              <th>Goals</th>
               <th>Detail</th>
             </tr>
           </thead>
@@ -150,11 +149,11 @@ const ManagePlayer = () => {
               listPlayer.length > 0 &&
               listPlayer.map((player) => {
                 return (
-                  <tr key={player.id}>
+                  <tr key={player._id}>
                     <td>{player.name}</td>
-                    <td>{player.nation}</td>
+                    <td>{player.nation.name}</td>
                     <td>{player.club ? player.club : "-"}</td>
-                    <td>{new Intl.NumberFormat().format(player.cost)} $</td>
+                    <td>{player.goals}</td>
                     <td>
                       <Button
                         variant="danger"

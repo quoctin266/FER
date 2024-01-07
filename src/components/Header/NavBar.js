@@ -9,10 +9,10 @@ import {
   changeThemeLight,
 } from "../../redux/action/changeTheme";
 import { logout } from "../../redux/action/auth";
-import { signOut } from "firebase/auth";
-import { auth } from "../../firebase";
 import Image from "react-bootstrap/Image";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { postLogout } from "../../service/authService";
+import { toast } from "react-toastify";
 
 function NavBar() {
   const [isDark, setIsDark] = useState(true);
@@ -24,13 +24,11 @@ function NavBar() {
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
-    try {
-      await signOut(auth);
+    let res = await postLogout();
+    if (res.status === 200) {
       dispatch(logout());
       navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+    } else toast.error(res.message);
   };
 
   useEffect(() => {

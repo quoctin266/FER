@@ -4,4 +4,8 @@ const loginGoogle = async (data) => {
   return await axios.post("/google-login", data);
 };
 
-export { loginGoogle };
+const postLogout = async () => {
+  return await axios.post("/logout");
+};
+
+export { loginGoogle, postLogout };

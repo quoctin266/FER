@@ -28,13 +28,14 @@ const Login = () => {
         lastName: credentialResponseDecode.family_name,
       });
 
-      // todo
       if (res.status === 200) {
         dispatch(
           login({
             name: credentialResponseDecode.name,
             email: credentialResponseDecode.email,
             img: credentialResponseDecode.picture,
+            accessToken: res.data.accessToken,
+            refreshToken: res.data.refreshToken,
           })
         );
 

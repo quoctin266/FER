@@ -28,6 +28,8 @@ const authReducer = (state = INITIAL_STATE, action) => {
         name: "",
         email: "",
         img: "",
+        accessToken: "",
+        refreshToken: "",
         isAuthenticated: false,
       };
 

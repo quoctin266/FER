@@ -113,14 +113,10 @@ const ManagePlayer = () => {
   };
 
   const fetchAllPlayer = async () => {
-    try {
-      let res = await getAllPlayer();
-      if (res?.status === 200) {
-        setListPlayer(res.data);
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    let res = await getAllPlayer();
+    if (res?.status === 200) {
+      setListPlayer(res.data);
+    } else toast.error(res.error);
   };
 
   useEffect(() => {

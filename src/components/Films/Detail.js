@@ -14,7 +14,7 @@ const Detail = () => {
   const location = useLocation();
   const film = location.state.detail;
   return (
-    <div className="detail-container">
+    <div className="detail-container ps-5 pt-5 mt-5 ms-5 ">
       <Card className="film-card">
         <Card.Img variant="top" src={film.img} />
         <Card.Body>

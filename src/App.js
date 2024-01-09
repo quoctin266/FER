@@ -12,7 +12,7 @@ function App() {
     <div className="App" style={{ backgroundColor: background }}>
       <NavBar />
       <Scrollbars
-        style={{ height: "91vh" }}
+        style={{ height: "calc(100vh - 52.797px)" }}
         autoHide
         // Hide delay in ms
         autoHideTimeout={1000}

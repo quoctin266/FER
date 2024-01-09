@@ -13,6 +13,7 @@ import Image from "react-bootstrap/Image";
 import NavDropdown from "react-bootstrap/NavDropdown";
 import { postLogout } from "../../service/authService";
 import { toast } from "react-toastify";
+import defaultAvatar from "../../Image/default.png";
 
 function NavBar() {
   const [isDark, setIsDark] = useState(true);
@@ -67,7 +68,11 @@ function NavBar() {
             {isAuthenticated ? (
               <>
                 <Nav.Link style={{ width: "40px", paddingRight: "0" }}>
-                  <Image src={img} roundedCircle style={{ width: "90%" }} />
+                  <Image
+                    src={img ? img : defaultAvatar}
+                    roundedCircle
+                    style={{ width: "90%" }}
+                  />
                 </Nav.Link>
                 <NavDropdown title={name} id="basic-nav-dropdown">
                   <NavDropdown.Item onClick={() => navigate("/dashboard")}>

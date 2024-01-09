@@ -1,95 +1,78 @@
 import { toast } from "react-toastify";
-import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
 import { Button } from "react-bootstrap";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useForm } from "react-hook-form";
+import { postUploadFile } from "../../service/fileService";
+import { patchUpdatePlayer } from "../../service/playerService";
+
+const FOLDER_TYPE = "image";
+const FOLDER_NAME = "players";
 
 const EditForm = (props) => {
+  const { player, listNation } = props;
+
   const [show, setShow] = useState(false);
-  const [name, setName] = useState("");
-  const [cost, setCost] = useState("");
-  const [club, setClub] = useState("");
-  const [famous, setFamous] = useState("");
-  const [nation, setNation] = useState("");
-  const [info, setInfo] = useState("");
-  const [invalidName, setInvalidName] = useState(false);
-  const [invalidCost, setInvalidCost] = useState(false);
-  const [invalidClub, setInvalidClub] = useState(false);
-  const [invalidNation, setInvalidNation] = useState(false);
-  const [invalidInfo, setInvalidInfo] = useState(false);
+  const [file, setFile] = useState(null);
 
-  const { player } = props;
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: useMemo(() => {
+      return {
+        name: player.name,
+        club: player.club,
+        nation: player.nation?._id,
+        goals: player.goals,
+        info: player.info,
+      };
+    }, [player]),
+  });
 
-  const handleClose = () => {
-    setInvalidClub(false);
-    setInvalidCost(false);
-    setInvalidInfo(false);
-    setInvalidName(false);
-    setInvalidNation(false);
+  const handleClose = async () => {
     setShow(false);
+    reset();
   };
   const handleShow = () => {
-    setClub(player.club);
-    setCost(player.cost);
-    setFamous(player.famous ? 1 : 0);
-    setInfo(player.info);
-    setName(player.name);
-    setNation(player.nation);
     setShow(true);
   };
 
-  const handleEdit = async (e) => {
-    e.preventDefault();
-
-    if (!name) {
-      setInvalidName(true);
-      return;
+  const handleEdit = async (data) => {
+    let img = null;
+    if (file) {
+      let res = await postUploadFile(file, FOLDER_TYPE, FOLDER_NAME);
+      if (res.status === 201) {
+        img = res.data.fileName;
+      } else toast.error(res.error);
     }
 
-    if (!club) {
-      setInvalidClub(true);
-      return;
-    }
+    let res = null;
+    if (img) res = await patchUpdatePlayer(player._id, { ...data, img });
+    else res = await patchUpdatePlayer(player._id, { ...data });
 
-    if (!cost) {
-      setInvalidCost(true);
-      return;
-    }
-
-    if (!info) {
-      setInvalidInfo(true);
-      return;
-    }
-
-    if (!nation) {
-      setInvalidNation(true);
-      return;
-    }
-
-    try {
-      let res = await axios.put(
-        `https://6497076483d4c69925a3560d.mockapi.io/api/v1/demoAPI/${player.id}`,
-        {
-          name: name,
-          club: club,
-          cost: cost,
-          info: info,
-          famous: +famous === 1 ? true : false,
-          nation,
-        }
-      );
-      if (res && res.status === 200) {
-        toast.success("Updated successfully");
-        props.fetchAllPlayer();
-        handleClose();
-      } else toast.error("Something went wrong.");
-    } catch (e) {
-      console.log(e);
-    }
+    if (res.status === 200) {
+      toast.success(res.message);
+      props.fetchAllPlayer();
+      setShow(false);
+    } else toast.error(res.error);
   };
+
+  useEffect(() => {
+    reset({
+      name: player.name,
+      club: player.club,
+      nation: player.nation?._id,
+      goals: player.goals,
+      info: player.info,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [player]);
 
   return (
     <>
@@ -106,7 +89,7 @@ const EditForm = (props) => {
         <Modal.Header closeButton>
           <Modal.Title>Edit Info</Modal.Title>
         </Modal.Header>
-        <Form onSubmit={handleEdit}>
+        <Form onSubmit={handleSubmit(handleEdit)}>
           <Modal.Body>
             <Row className="mb-3">
               <Col>
@@ -114,30 +97,11 @@ const EditForm = (props) => {
                 <Form.Control
                   type="text"
                   placeholder="Enter name"
-                  name="editName"
-                  value={name}
-                  onChange={(e) => {
-                    setName(e.target.value);
-                    setInvalidName(false);
-                  }}
+                  {...register("name", { required: "Name is required" })}
                 />
-                {invalidName && <div style={{ color: "red" }}>Required</div>}
-              </Col>
-
-              <Col>
-                <Form.Label>Cost</Form.Label>
-                <Form.Control
-                  type="number"
-                  placeholder="Enter cost"
-                  min={0}
-                  name="editCost"
-                  value={cost}
-                  onChange={(e) => {
-                    setInvalidCost(false);
-                    setCost(e.target.value);
-                  }}
-                />
-                {invalidCost && <div style={{ color: "red" }}>Required</div>}
+                {errors.name && (
+                  <div style={{ color: "red" }}>{errors.name.message}</div>
+                )}
               </Col>
 
               <Col>
@@ -145,43 +109,46 @@ const EditForm = (props) => {
                 <Form.Control
                   type="text"
                   placeholder="Enter club"
-                  name="editClub"
-                  value={club}
-                  onChange={(e) => {
-                    setClub(e.target.value);
-                    setInvalidClub(false);
-                  }}
+                  {...register("club", { required: "Club is required" })}
                 />
-                {invalidClub && <div style={{ color: "red" }}>Required</div>}
+                {errors.club && (
+                  <div style={{ color: "red" }}>{errors.club.message}</div>
+                )}
               </Col>
             </Row>
 
             <Row className="mb-3">
               <Col>
-                <Form.Label>Famous</Form.Label>
+                <Form.Label>Nation</Form.Label>
                 <Form.Select
-                  name="editFamous"
-                  value={famous}
-                  onChange={(e) => setFamous(e.target.value)}
+                  {...register("nation", { required: "Nation is required" })}
                 >
-                  <option value={1}>Yes</option>
-                  <option value={0}>No</option>
+                  {listNation &&
+                    listNation.length > 0 &&
+                    listNation.map((nation) => {
+                      return (
+                        <option key={nation._id} value={nation._id}>
+                          {nation.name}
+                        </option>
+                      );
+                    })}
                 </Form.Select>
               </Col>
 
               <Col>
-                <Form.Label>Nation</Form.Label>
+                <Form.Label>Goals</Form.Label>
                 <Form.Control
-                  type="text"
-                  placeholder="Enter nation"
-                  name="editNation"
-                  value={nation}
-                  onChange={(e) => {
-                    setInvalidNation(false);
-                    setNation(e.target.value);
-                  }}
+                  type="number"
+                  placeholder="Enter goals"
+                  min={0}
+                  {...register("goals", {
+                    required: "Goals is required",
+                    min: { value: 0, message: "Can not be less than" },
+                  })}
                 />
-                {invalidNation && <div style={{ color: "red" }}>Required</div>}
+                {errors.goals && (
+                  <div style={{ color: "red" }}>{errors.goals.message}</div>
+                )}
               </Col>
             </Row>
 
@@ -190,15 +157,22 @@ const EditForm = (props) => {
                 <Form.Label>Info</Form.Label>
                 <Form.Control
                   as="textarea"
-                  rows={4}
-                  name="editInfo"
-                  value={info}
-                  onChange={(e) => {
-                    setInvalidInfo(false);
-                    setInfo(e.target.value);
-                  }}
+                  rows={3}
+                  {...register("info", {
+                    required: "Info is required",
+                  })}
                 />
-                {invalidInfo && <div style={{ color: "red" }}>Required</div>}
+                {errors.info && (
+                  <div style={{ color: "red" }}>{errors.info.message}</div>
+                )}
+              </Col>
+
+              <Col>
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                  type="file"
+                  onChange={(e) => setFile(e.target.files[0])}
+                />
               </Col>
             </Row>
           </Modal.Body>

@@ -2,7 +2,7 @@ import { CHANGE_THEME_DARK, CHANGE_THEME_LIGHT } from "../type/types";
 
 const INITIAL_STATE = {
   headerBackground: "dark",
-  background: "#c7c7c7",
+  background: "#f9f9f9",
   color: "light",
 };
 
@@ -12,7 +12,7 @@ const themeReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         headerBackground: "dark",
-        background: "#c7c7c7",
+        background: "#f9f9f9",
         color: "light",
       };
 

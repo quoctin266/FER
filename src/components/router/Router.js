@@ -10,7 +10,9 @@ import ManagePlayer from "../manage/ManagePlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "../auth/Login";
-import Private from "../auth/Private";
+import ProtectedRoute from "./ProtectedRoute";
+import NotFound from "../access/NotFound";
+import LimitedAccess from "../access/LimitedAccess";
 
 const router = createBrowserRouter([
   {
@@ -44,9 +46,9 @@ const router = createBrowserRouter([
       {
         path: "/dashboard",
         element: (
-          <Private>
+          <ProtectedRoute name="dashboard">
             <ManagePlayer />
-          </Private>
+          </ProtectedRoute>
         ),
       },
     ],
@@ -54,6 +56,14 @@ const router = createBrowserRouter([
   {
     path: "/login",
     element: <Login />,
+  },
+  {
+    path: "/no-access",
+    element: <LimitedAccess />,
+  },
+  {
+    path: "*",
+    element: <NotFound />,
   },
 ]);
 

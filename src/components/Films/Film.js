@@ -11,7 +11,7 @@ export default function Film(props) {
 
   return (
     <Container>
-      <div className="film-container">
+      <div className="film-container mb-5">
         {listFilms &&
           listFilms.length > 0 &&
           listFilms.map((film) => {

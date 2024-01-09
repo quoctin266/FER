@@ -2,114 +2,112 @@ import Table from "react-bootstrap/Table";
 import "./ManagePlayer.scss";
 import { Button } from "react-bootstrap";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import Image from "react-bootstrap/Image";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Row from "react-bootstrap/Row";
-import { useFormik } from "formik";
-import * as Yup from "yup";
 import { toast } from "react-toastify";
 import EditForm from "./EditForm";
-import { getAllPlayer } from "../../service/playerService";
+import {
+  getAllPlayer,
+  postCreatePlayer,
+  deletePlayer,
+} from "../../service/playerService";
+import { useForm } from "react-hook-form";
+import { getAllNation } from "../../service/nationService";
+import { postUploadFile, removeFile } from "../../service/fileService";
+
+const FOLDER_TYPE = "image";
+const FOLDER_NAME = "players";
 
 const ManagePlayer = () => {
   const [listPlayer, setListPlayer] = useState([]);
+  const [listNation, setListNation] = useState([]);
+
+  const [fileName, setFileName] = useState("");
+  const [fileMissing, setFileMissing] = useState(false);
+  const [showAdd, setShowAdd] = useState(false);
+
   const [show, setShow] = useState(false);
   const [detailPlayer, setDetailPlayer] = useState("");
-  const [showAdd, setShowAdd] = useState(false);
-  const [showDelete, setShowDelete] = useState(false);
-  const [deletePlayer, setDeletePlayer] = useState("");
 
-  const { values, handleChange, handleSubmit, errors } = useFormik({
-    initialValues: {
-      name: "",
-      cost: "",
-      club: "",
-      famous: "",
+  const [showDelete, setShowDelete] = useState(false);
+  const [deletingPlayer, setDeletingPlayer] = useState("");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: {
       nation: "",
-      clip: "",
-      info: "",
-      img: "",
     },
-    onSubmit: async (values) => {
-      try {
-        let res = await axios.post(
-          "https://6497076483d4c69925a3560d.mockapi.io/api/v1/demoAPI",
-          values
-        );
-        if (res && res.status === 201) {
-          toast.success("Created successfully.");
-          fetchAllPlayer();
-          handleCloseAdd();
-        } else toast.error("Something went wrong.");
-      } catch (e) {
-        console.log(e);
-      }
-    },
-    validationSchema: Yup.object({
-      name: Yup.string().required("Required."),
-      cost: Yup.number().required("Required."),
-      club: Yup.string().required("Required."),
-      famous: Yup.boolean().required("Must select."),
-      info: Yup.string()
-        .required("Required.")
-        .min(10, "Must be 10 characters or more"),
-      nation: Yup.string().required("Required."),
-      clip: Yup.string().required("Required."),
-      img: Yup.string().required("Required."),
-    }),
   });
+
+  const handleCloseAdd = () => {
+    setShowAdd(false);
+  };
+  const handleShowAdd = () => {
+    reset();
+    setShowAdd(true);
+  };
+
+  const handleUploadFile = async (file) => {
+    if (fileName) {
+      await removeFile(fileName);
+    }
+
+    let res = await postUploadFile(file, FOLDER_TYPE, FOLDER_NAME);
+    if (res.status === 201) {
+      setFileName(res.data.fileName);
+      setFileMissing(false);
+      toast.success(res.message);
+    } else toast.error(res.error);
+  };
+
+  const handleAdd = async (data) => {
+    if (!fileName) {
+      setFileMissing(true);
+      return;
+    }
+    let res = await postCreatePlayer({ ...data, img: fileName });
+    if (res.status === 201) {
+      fetchAllPlayer();
+      toast.success(res.message);
+      handleCloseAdd();
+    } else toast.error(res.error);
+  };
 
   const handleCloseDelete = () => {
     setShowDelete(false);
   };
   const handleShowDelete = (player) => {
     setShowDelete(true);
-    setDeletePlayer(player);
+    setDeletingPlayer(player);
   };
 
   const handleDelete = async () => {
-    try {
-      let res = await axios.delete(
-        `https://6497076483d4c69925a3560d.mockapi.io/api/v1/demoAPI/${deletePlayer.id}`
-      );
-      if (res && res.status === 200) {
-        toast.success("Deleted successfully.");
-        handleCloseDelete();
-        fetchAllPlayer();
-      }
-    } catch (e) {
-      console.log(e);
-    }
+    let res = await deletePlayer(deletingPlayer._id);
+    if (res && res.status === 200) {
+      toast.success(res.message);
+      handleCloseDelete();
+      fetchAllPlayer();
+    } else toast.error(res.error);
   };
-
-  const handleCloseAdd = () => {
-    setShowAdd(false);
-    values.name = "";
-    values.cost = "";
-    values.club = "";
-    values.famous = "";
-    values.nation = "";
-    values.clip = "";
-    values.info = "";
-    values.img = "";
-    errors.cost = "";
-    errors.name = "";
-    errors.club = "";
-    errors.famous = "";
-    errors.nation = "";
-    errors.clip = "";
-    errors.info = "";
-    errors.img = "";
-  };
-  const handleShowAdd = () => setShowAdd(true);
 
   const handleClose = () => setShow(false);
   const handleShow = (player) => {
     setDetailPlayer(player);
     setShow(true);
+  };
+
+  const fetchAllNation = async () => {
+    let res = await getAllNation();
+    if (res?.status === 200) {
+      setListNation(res.data);
+    } else toast.error(res.error);
   };
 
   const fetchAllPlayer = async () => {
@@ -121,6 +119,7 @@ const ManagePlayer = () => {
 
   useEffect(() => {
     fetchAllPlayer();
+    fetchAllNation();
   }, []);
 
   return (
@@ -130,7 +129,7 @@ const ManagePlayer = () => {
         <Button variant="primary" className="mb-3" onClick={handleShowAdd}>
           Add new
         </Button>
-        <Table striped hover>
+        <Table striped hover bo>
           <thead>
             <tr>
               <th>Name</th>
@@ -147,7 +146,7 @@ const ManagePlayer = () => {
                 return (
                   <tr key={player._id}>
                     <td>{player.name}</td>
-                    <td>{player.nation.name}</td>
+                    <td>{player.nation?.name}</td>
                     <td>{player.club ? player.club : "-"}</td>
                     <td>{player.goals}</td>
                     <td>
@@ -167,6 +166,7 @@ const ManagePlayer = () => {
                       <EditForm
                         player={player}
                         fetchAllPlayer={fetchAllPlayer}
+                        listNation={listNation}
                       />
                     </td>
                   </tr>
@@ -185,7 +185,7 @@ const ManagePlayer = () => {
           <Modal.Header closeButton>
             <Modal.Title>Add New</Modal.Title>
           </Modal.Header>
-          <Form onSubmit={handleSubmit}>
+          <Form onSubmit={handleSubmit(handleAdd)}>
             <Modal.Body>
               <Row className="mb-3">
                 <Col>
@@ -193,27 +193,10 @@ const ManagePlayer = () => {
                   <Form.Control
                     type="text"
                     placeholder="Enter name"
-                    name="name"
-                    value={values.name}
-                    onChange={handleChange}
+                    {...register("name", { required: "Name is required" })}
                   />
                   {errors.name && (
-                    <div style={{ color: "red" }}>{errors.name}</div>
-                  )}
-                </Col>
-
-                <Col>
-                  <Form.Label>Cost</Form.Label>
-                  <Form.Control
-                    type="number"
-                    placeholder="Enter cost"
-                    min={0}
-                    name="cost"
-                    value={values.cost}
-                    onChange={handleChange}
-                  />
-                  {errors.cost && (
-                    <div style={{ color: "red" }}>{errors.cost}</div>
+                    <div style={{ color: "red" }}>{errors.name.message}</div>
                   )}
                 </Col>
 
@@ -222,93 +205,80 @@ const ManagePlayer = () => {
                   <Form.Control
                     type="text"
                     placeholder="Enter club"
-                    name="club"
-                    value={values.club}
-                    onChange={handleChange}
+                    {...register("club", { required: "Club is required" })}
                   />
                   {errors.club && (
-                    <div style={{ color: "red" }}>{errors.club}</div>
+                    <div style={{ color: "red" }}>{errors.club.message}</div>
                   )}
                 </Col>
               </Row>
 
               <Row className="mb-3">
-                <Col>
-                  <Form.Label>Famous</Form.Label>
-                  <Form.Select
-                    name="famous"
-                    value={values.famous}
-                    onChange={handleChange}
-                  >
-                    <option value="">Choose...</option>
-                    <option value={true}>Yes</option>
-                    <option value={false}>No</option>
-                  </Form.Select>
-                  {errors.famous && (
-                    <div style={{ color: "red" }}>{errors.famous}</div>
-                  )}
-                </Col>
-
                 <Col>
                   <Form.Label>Nation</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter nation"
-                    name="nation"
-                    value={values.nation}
-                    onChange={handleChange}
-                  />
+                  <Form.Select
+                    {...register("nation", { required: "Nation is required" })}
+                  >
+                    <option value="" disabled hidden>
+                      Open this select menu
+                    </option>
+                    {listNation &&
+                      listNation.length > 0 &&
+                      listNation.map((nation) => {
+                        return (
+                          <option key={nation._id} value={nation._id}>
+                            {nation.name}
+                          </option>
+                        );
+                      })}
+                  </Form.Select>
                   {errors.nation && (
-                    <div style={{ color: "red" }}>{errors.nation}</div>
-                  )}
-                </Col>
-              </Row>
-
-              <Row className="mb-3">
-                <Col>
-                  <Form.Label>Clip</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter clip url"
-                    name="clip"
-                    value={values.clip}
-                    onChange={handleChange}
-                  />
-                  {errors.clip && (
-                    <div style={{ color: "red" }}>{errors.clip}</div>
+                    <div style={{ color: "red" }}>{errors.nation.message}</div>
                   )}
                 </Col>
 
                 <Col>
-                  <Form.Label>Image</Form.Label>
+                  <Form.Label>Goals</Form.Label>
                   <Form.Control
-                    placeholder="Enter image url"
-                    type="text"
-                    name="img"
-                    value={values.img}
-                    onChange={handleChange}
+                    type="number"
+                    placeholder="Enter goals"
+                    min={0}
+                    {...register("goals", {
+                      required: "Goals is required",
+                      min: { value: 0, message: "Can not be less than" },
+                    })}
                   />
-                  {errors.img && (
-                    <div style={{ color: "red" }}>{errors.img}</div>
+                  {errors.goals && (
+                    <div style={{ color: "red" }}>{errors.goals.message}</div>
                   )}
                 </Col>
               </Row>
+
               <Row className="mb-3">
                 <Col>
                   <Form.Label>Info</Form.Label>
                   <Form.Control
                     as="textarea"
                     rows={3}
-                    name="info"
-                    value={values.info}
-                    onChange={handleChange}
+                    {...register("info", {
+                      required: "Info is required",
+                    })}
                   />
                   {errors.info && (
-                    <div style={{ color: "red" }}>{errors.info}</div>
+                    <div style={{ color: "red" }}>{errors.info.message}</div>
                   )}
                 </Col>
 
-                <Col></Col>
+                <Col>
+                  <Form.Label>Image</Form.Label>
+                  <Form.Control
+                    type="file"
+                    onChange={(e) => handleUploadFile(e.target.files[0])}
+                  />
+                  {fileMissing && (
+                    <div style={{ color: "red" }}>No file uploaded yet</div>
+                  )}
+                </Col>
               </Row>
             </Modal.Body>
             <Modal.Footer>
@@ -334,17 +304,27 @@ const ManagePlayer = () => {
           </Modal.Header>
           <Modal.Body>
             <div className="player-profile">
-              <Image src={detailPlayer.img} rounded />
-              <div className="des">{detailPlayer.info}</div>
+              <Image src={detailPlayer.imageUrl} rounded />
+              <div>
+                <div className="des">
+                  <b>Name: </b> {detailPlayer.name}
+                </div>
+                <div className="des">
+                  <b>Nation: </b> {detailPlayer.nation?.name}
+                </div>
+                <div className="des">
+                  <b>Goals: </b> {detailPlayer.goals}
+                </div>
+                <div className="des">
+                  <b>Club: </b>
+                  {detailPlayer.club}
+                </div>
+                <div>
+                  <b>Info:</b>
+                </div>
+                <div className="des">{detailPlayer.info}</div>
+              </div>
             </div>
-            <iframe
-              style={{ width: "100%", height: "44vh", borderRadius: "15px" }}
-              src={detailPlayer.clip}
-              title={detailPlayer.name}
-              frameBorder="0"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-              allowFullScreen
-            ></iframe>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>
@@ -364,9 +344,9 @@ const ManagePlayer = () => {
           </Modal.Header>
           <Modal.Body>
             Are you sure to delete this player? <br />
-            Name: <b>{deletePlayer.name}</b> <br />
-            Club: <b>{deletePlayer.club}</b> <br />
-            Nation: <b>{deletePlayer.nation}</b>
+            Name: <b>{deletingPlayer.name}</b> <br />
+            Club: <b>{deletingPlayer.club}</b> <br />
+            Nation: <b>{deletingPlayer.nation?.name}</b>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseDelete}>

@@ -1,11 +1,15 @@
 import axios from "axios";
 import { store } from "../redux/store";
+import { login, logout } from "../redux/action/auth";
+import { getNewToken } from "../service/authService";
 
 const instance = axios.create({
   baseURL: "http://localhost:8080/api/v1/",
+  withCredentials: true,
 });
 
-instance.defaults.withCredentials = true;
+const NO_RETRY_HEADER = "x-no-retry";
+
 instance.interceptors.request.use(
   function (config) {
     // Do something before request is sent
@@ -27,7 +31,7 @@ instance.interceptors.response.use(
 
     return response.data ? response.data : response;
   },
-  function (error) {
+  async function (error) {
     // Any status codes that falls outside the range of 2xx cause this function to trigger
     // Do something with response error
     const status = error.response?.status || 500;
@@ -35,6 +39,36 @@ instance.interceptors.response.use(
     switch (status) {
       // authentication (token related issues)
       case 401: {
+        if (
+          error.config.url !== "auth/login" &&
+          !error.config.headers[NO_RETRY_HEADER]
+        ) {
+          error.config.headers[NO_RETRY_HEADER] = "true";
+          let res = await getNewToken();
+          if (res.status === 200) {
+            const { username, email } = res.data.userCredentials;
+            const { accessToken, refreshToken } = res.data;
+
+            error.config.headers["Authorization"] = `Bearer ${accessToken}`;
+
+            store.dispatch(
+              login({
+                name: username,
+                email,
+                accessToken,
+                refreshToken,
+              })
+            );
+            return instance.request(error.config);
+          }
+        }
+        return error.response?.data ? error.response.data : error;
+      }
+
+      case 400: {
+        if (error.config.url === "/auth/refresh") {
+          store.dispatch(logout());
+        }
         return error.response?.data ? error.response.data : error;
       }
 

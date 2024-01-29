@@ -5,7 +5,7 @@ import { Navigate } from "react-router-dom";
 const ProtectedRoute = (props) => {
   const { name } = props;
 
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
   const role = useSelector((state) => state.auth.role);
@@ -18,7 +18,7 @@ const ProtectedRoute = (props) => {
       setShow(true);
     } else if (role === 1 && arrUser.includes(name)) {
       setShow(true);
-    }
+    } else setShow(false);
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

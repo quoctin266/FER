@@ -21,7 +21,8 @@ code {
   margin-bottom: 3%;
 
   img {
-    width: 50%;
+    width     : 50%;
+    object-fit: cover;
   }
 
   .des {

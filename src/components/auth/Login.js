@@ -73,9 +73,9 @@ const Login = () => {
       className="d-flex justify-content-center align-items-center"
       style={{ height: "100vh" }}
     >
-      <Col xs={10} sm={7} md={6} lg={4}>
+      <Col xs={10} sm={7} md={6} lg={4} xxl={3}>
         <GoogleOAuthProvider clientId="929153793805-ajauhckm4tj809q2v0lj1po4gg2b42nf.apps.googleusercontent.com">
-          <Form className="login-form p-3" onSubmit={handleSubmit(handleLogin)}>
+          <Form className="login-form p-5" onSubmit={handleSubmit(handleLogin)}>
             <div className="title">Login Now</div>
             <Form.Group className="mb-3" controlId="formBasicEmail">
               <Form.Label>Email address</Form.Label>

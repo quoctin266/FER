@@ -1,0 +1,20 @@
+.dashboard-container {
+    min-height: 85vh;
+    padding   : 3rem 6rem;
+
+    .btn-tab {
+        width: 30%;
+
+        .player-tab {
+            &.active {
+                background-color: rgb(2, 60, 110);
+            }
+        }
+
+        .nation-tab {
+            &.active {
+                background-color: rgb(2, 60, 110);
+            }
+        }
+    }
+}

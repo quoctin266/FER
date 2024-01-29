@@ -6,13 +6,13 @@ import Film from "../Films/Film";
 import Contact from "../contact/Contact";
 import About from "../about/About";
 import Detail from "../Films/Detail";
-import ManagePlayer from "../manage/ManagePlayer";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Login from "../auth/Login";
 import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "../access/NotFound";
 import LimitedAccess from "../access/LimitedAccess";
+import Dashboard from "../manage/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
         path: "/dashboard",
         element: (
           <ProtectedRoute name="dashboard">
-            <ManagePlayer />
+            <Dashboard />
           </ProtectedRoute>
         ),
       },

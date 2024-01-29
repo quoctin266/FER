@@ -1,4 +1,4 @@
-.manage-player-container {
+.manage-nation-container {
     padding   : 3% 0;
     min-height: 86vh;
 
@@ -12,7 +12,7 @@
 
     }
 
-    .list-player {
+    .list-nation {
         background-color: white;
         padding         : 3% 5%;
         border-radius   : 15px;
@@ -20,5 +20,4 @@
         border-color    : #8cc3f3;
         box-shadow      : 0 1rem 3rem rgba(132, 139, 200, 0.4);
     }
-
 }

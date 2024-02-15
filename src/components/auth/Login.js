@@ -33,14 +33,16 @@ const Login = () => {
       });
 
       if (res.status === 200) {
+        const { accessToken, refreshToken } = res.data;
+        const { username, ...rest } = res.data.userCredentials;
+
         dispatch(
           login({
-            name: credentialResponseDecode.name,
-            email: credentialResponseDecode.email,
+            name: username,
             img: credentialResponseDecode.picture,
-            role: res.data.userCredentials.role,
-            accessToken: res.data.accessToken,
-            refreshToken: res.data.refreshToken,
+            ...rest,
+            accessToken,
+            refreshToken,
           })
         );
 
@@ -53,14 +55,20 @@ const Login = () => {
   const handleLogin = async (data) => {
     let res = await postLogin(data);
     if (res.status === 200) {
+      if (res.data.userCredentials.status === 0) {
+        toast.error("Account currently inactive");
+        return;
+      }
+
+      const { accessToken, refreshToken } = res.data;
+      const { username, ...rest } = res.data.userCredentials;
+
       dispatch(
         login({
-          name: res.data.userCredentials.username,
-          email: res.data.userCredentials.email,
-          img: "",
-          role: res.data.userCredentials.role,
-          accessToken: res.data.accessToken,
-          refreshToken: res.data.refreshToken,
+          name: username,
+          ...rest,
+          accessToken,
+          refreshToken,
         })
       );
       navigate("/");
@@ -109,6 +117,14 @@ const Login = () => {
               }
             />
             <br />
+
+            <div className="mb-3">
+              Don't have an account?{" "}
+              <span className="register" onClick={() => navigate("/register")}>
+                Register now
+              </span>
+            </div>
+
             <div className="back-btn">
               <span
                 onClick={() => {

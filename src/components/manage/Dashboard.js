@@ -3,6 +3,7 @@ import "./Dashboard.scss";
 import { useState } from "react";
 import ManagePlayer from "./ManagePlayer";
 import ManageNation from "./ManageNation";
+import ManageUser from "./ManageUser";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("player");
@@ -24,10 +25,18 @@ const Dashboard = () => {
         >
           Nations
         </Button>
+        <Button
+          variant="primary"
+          className={`user-tab ${activeTab === "user" ? "active" : ""}`}
+          onClick={() => setActiveTab("user")}
+        >
+          Users
+        </Button>
       </ButtonGroup>
 
       {activeTab === "player" && <ManagePlayer />}
       {activeTab === "nation" && <ManageNation />}
+      {activeTab === "user" && <ManageUser />}
     </div>
   );
 };

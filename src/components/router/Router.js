@@ -13,6 +13,9 @@ import ProtectedRoute from "./ProtectedRoute";
 import NotFound from "../access/NotFound";
 import LimitedAccess from "../access/LimitedAccess";
 import Dashboard from "../manage/Dashboard";
+import PlayerDetail from "../Player/Detail";
+import Register from "../auth/Register";
+import Profile from "../profile/Profile";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +29,10 @@ const router = createBrowserRouter([
       {
         path: "/players",
         element: <Player />,
+      },
+      {
+        path: "/player-detail/:id",
+        element: <PlayerDetail />,
       },
       {
         path: "/Movies",
@@ -44,6 +51,10 @@ const router = createBrowserRouter([
         element: <About />,
       },
       {
+        path: "/profile",
+        element: <Profile />,
+      },
+      {
         path: "/dashboard",
         element: (
           <ProtectedRoute name="dashboard">
@@ -57,6 +68,11 @@ const router = createBrowserRouter([
     path: "/login",
     element: <Login />,
   },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+
   {
     path: "/no-access",
     element: <LimitedAccess />,

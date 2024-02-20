@@ -8,6 +8,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { postUploadFile } from "../../service/fileService";
 import { patchUpdatePlayer } from "../../service/playerService";
+import { Switch } from "@mui/material";
 
 const FOLDER_TYPE = "image";
 const FOLDER_NAME = "players";
@@ -17,6 +18,7 @@ const EditForm = (props) => {
 
   const [show, setShow] = useState(false);
   const [file, setFile] = useState(null);
+  const [checked, setChecked] = useState(player.isCaptain);
 
   const {
     register,
@@ -34,6 +36,10 @@ const EditForm = (props) => {
       };
     }, [player]),
   });
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
+  };
 
   const handleClose = async () => {
     setShow(false);
@@ -53,8 +59,17 @@ const EditForm = (props) => {
     }
 
     let res = null;
-    if (img) res = await patchUpdatePlayer(player._id, { ...data, img });
-    else res = await patchUpdatePlayer(player._id, { ...data });
+    if (img)
+      res = await patchUpdatePlayer(player._id, {
+        ...data,
+        isCaptain: checked,
+        img,
+      });
+    else
+      res = await patchUpdatePlayer(player._id, {
+        ...data,
+        isCaptain: checked,
+      });
 
     if (res.status === 200) {
       toast.success(res.message);
@@ -154,27 +169,36 @@ const EditForm = (props) => {
 
             <Row className="mb-3">
               <Col>
-                <Form.Label>Info</Form.Label>
-                <Form.Control
-                  as="textarea"
-                  rows={3}
-                  {...register("info", {
-                    required: "Info is required",
-                  })}
-                />
-                {errors.info && (
-                  <div style={{ color: "red" }}>{errors.info.message}</div>
-                )}
-              </Col>
-
-              <Col>
                 <Form.Label>Image</Form.Label>
                 <Form.Control
                   type="file"
                   onChange={(e) => setFile(e.target.files[0])}
                 />
               </Col>
+
+              <Col>
+                <div>Captain Status</div>
+                <Switch
+                  checked={checked}
+                  onChange={handleChange}
+                  inputProps={{ "aria-label": "controlled" }}
+                />
+              </Col>
             </Row>
+
+            <Col>
+              <Form.Label>Info</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={4}
+                {...register("info", {
+                  required: "Info is required",
+                })}
+              />
+              {errors.info && (
+                <div style={{ color: "red" }}>{errors.info.message}</div>
+              )}
+            </Col>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleClose}>

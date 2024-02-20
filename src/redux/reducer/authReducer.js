@@ -1,6 +1,12 @@
-import { LOGIN, LOGOUT } from "../type/types";
+import { LOGIN, LOGOUT, UPDATE } from "../type/types";
 
 const INITIAL_STATE = {
+  id: "",
+  firstName: "",
+  lastName: "",
+  dob: "",
+  address: "",
+  phone: "",
   name: "",
   email: "",
   img: "",
@@ -8,6 +14,7 @@ const INITIAL_STATE = {
   accessToken: "",
   refreshToken: "",
   isAuthenticated: false,
+  googleAuth: false,
 };
 
 const authReducer = (state = INITIAL_STATE, action) => {
@@ -15,25 +22,20 @@ const authReducer = (state = INITIAL_STATE, action) => {
     case LOGIN:
       return {
         ...state,
-        name: action?.payload?.name,
-        email: action?.payload?.email,
-        img: action?.payload?.img,
-        role: action?.payload?.role,
-        accessToken: action?.payload?.accessToken,
-        refreshToken: action?.payload?.refreshToken,
+        ...action.payload,
         isAuthenticated: true,
       };
 
     case LOGOUT:
       return {
         ...state,
-        name: "",
-        email: "",
-        img: "",
-        role: -1,
-        accessToken: "",
-        refreshToken: "",
-        isAuthenticated: false,
+        ...INITIAL_STATE,
+      };
+
+    case UPDATE:
+      return {
+        ...state,
+        ...action.payload,
       };
 
     default:

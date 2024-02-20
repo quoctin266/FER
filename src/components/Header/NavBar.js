@@ -20,8 +20,10 @@ function NavBar() {
   const dispatch = useDispatch();
   const background = useSelector((state) => state.theme.headerBackground);
   let isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  let role = useSelector((state) => state.auth.role);
   let img = useSelector((state) => state.auth.img);
   let name = useSelector((state) => state.auth.name);
+
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -44,7 +46,7 @@ function NavBar() {
   return (
     <>
       <Navbar bg={isDark ? "dark" : "light"} variant={isDark ? "dark" : "none"}>
-        <Container>
+        <Container className="mx-5 px-5">
           <Navbar.Brand href="#home">Navbar</Navbar.Brand>
           <Nav className="me-auto">
             <NavLink to="/" className="nav-link">
@@ -74,10 +76,21 @@ function NavBar() {
                     style={{ width: "90%" }}
                   />
                 </Nav.Link>
-                <NavDropdown title={name} id="basic-nav-dropdown">
-                  <NavDropdown.Item onClick={() => navigate("/dashboard")}>
-                    Dashboard
-                  </NavDropdown.Item>
+                <NavDropdown
+                  title={name}
+                  id="basic-nav-dropdown"
+                  drop="down-centered"
+                >
+                  {role === 0 && (
+                    <NavDropdown.Item onClick={() => navigate("/dashboard")}>
+                      Dashboard
+                    </NavDropdown.Item>
+                  )}
+                  {(role === 1 || role === 0) && (
+                    <NavDropdown.Item onClick={() => navigate("/profile")}>
+                      Profile
+                    </NavDropdown.Item>
+                  )}
                   <NavDropdown.Divider />
                   <NavDropdown.Item onClick={handleSignOut}>
                     Logout

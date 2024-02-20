@@ -1,0 +1,23 @@
+.manage-user-container {
+    padding   : 3% 0;
+    min-height: 86vh;
+
+    .title {
+        font-size    : 2.5vw;
+        font-weight  : 500;
+        margin-bottom: 2%;
+        color        : rgb(93 109 227);
+        padding      : 1%;
+        width        : 30%;
+
+    }
+
+    .list-user {
+        background-color: white;
+        padding         : 3% 5%;
+        border-radius   : 15px;
+        border          : 1px solid;
+        border-color    : #8cc3f3;
+        box-shadow      : 0 1rem 3rem rgba(132, 139, 200, 0.4);
+    }
+}

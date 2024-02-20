@@ -1,4 +1,4 @@
-.login-form {
+.register-form {
     border-radius: 15px;
     border       : 1px solid #c3c3c3;
 
@@ -9,7 +9,7 @@
         font-size    : 1.3rem;
     }
 
-    .login-btn {
+    .register-btn {
         margin-top : 5%;
         line-height: 30px;
         width      : 100%;
@@ -36,7 +36,7 @@
         justify-content: center;
     }
 
-    .register {
+    .login {
         cursor     : pointer;
         color      : rgb(39, 161, 218);
         font-weight: 600;

@@ -40,7 +40,7 @@ instance.interceptors.response.use(
       // authentication (token related issues)
       case 401: {
         if (
-          error.config.url !== "auth/login" &&
+          error.config.url !== "/auth/login" &&
           !error.config.headers[NO_RETRY_HEADER]
         ) {
           error.config.headers[NO_RETRY_HEADER] = "true";
@@ -48,7 +48,7 @@ instance.interceptors.response.use(
           const refreshToken = store?.getState()?.auth?.refreshToken;
           let res = await getNewToken({ refreshToken });
           if (res.status === 200) {
-            const { username, email } = res.data.userCredentials;
+            const { username, ...rest } = res.data.userCredentials;
             const { accessToken, refreshToken } = res.data;
 
             error.config.headers["Authorization"] = `Bearer ${accessToken}`;
@@ -56,7 +56,7 @@ instance.interceptors.response.use(
             store.dispatch(
               login({
                 name: username,
-                email,
+                ...rest,
                 accessToken,
                 refreshToken,
               })

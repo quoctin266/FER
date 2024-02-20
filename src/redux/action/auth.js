@@ -1,4 +1,4 @@
-import { LOGIN, LOGOUT } from "../type/types";
+import { LOGIN, LOGOUT, UPDATE } from "../type/types";
 
 export const login = (data) => {
   return {
@@ -10,5 +10,12 @@ export const login = (data) => {
 export const logout = () => {
   return {
     type: LOGOUT,
+  };
+};
+
+export const update = (data) => {
+  return {
+    type: UPDATE,
+    payload: data,
   };
 };

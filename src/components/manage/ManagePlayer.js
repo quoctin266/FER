@@ -17,6 +17,7 @@ import {
 import { useForm } from "react-hook-form";
 import { getAllNation } from "../../service/nationService";
 import { postUploadFile, removeFile } from "../../service/fileService";
+import { Switch } from "@mui/material";
 
 const FOLDER_TYPE = "image";
 const FOLDER_NAME = "players";
@@ -35,6 +36,8 @@ const ManagePlayer = () => {
   const [showDelete, setShowDelete] = useState(false);
   const [deletingPlayer, setDeletingPlayer] = useState("");
 
+  const [checked, setChecked] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -52,6 +55,10 @@ const ManagePlayer = () => {
   const handleShowAdd = () => {
     reset();
     setShowAdd(true);
+  };
+
+  const handleChange = (event) => {
+    setChecked(event.target.checked);
   };
 
   const handleUploadFile = async (file) => {
@@ -256,20 +263,6 @@ const ManagePlayer = () => {
 
               <Row className="mb-3">
                 <Col>
-                  <Form.Label>Info</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    {...register("info", {
-                      required: "Info is required",
-                    })}
-                  />
-                  {errors.info && (
-                    <div style={{ color: "red" }}>{errors.info.message}</div>
-                  )}
-                </Col>
-
-                <Col>
                   <Form.Label>Image</Form.Label>
                   <Form.Control
                     type="file"
@@ -279,7 +272,30 @@ const ManagePlayer = () => {
                     <div style={{ color: "red" }}>No file uploaded yet</div>
                   )}
                 </Col>
+
+                <Col>
+                  <div>Captain Status</div>
+                  <Switch
+                    checked={checked}
+                    onChange={handleChange}
+                    inputProps={{ "aria-label": "controlled" }}
+                  />
+                </Col>
               </Row>
+
+              <Col>
+                <Form.Label>Info</Form.Label>
+                <Form.Control
+                  as="textarea"
+                  rows={4}
+                  {...register("info", {
+                    required: "Info is required",
+                  })}
+                />
+                {errors.info && (
+                  <div style={{ color: "red" }}>{errors.info.message}</div>
+                )}
+              </Col>
             </Modal.Body>
             <Modal.Footer>
               <Button variant="secondary" onClick={handleCloseAdd}>

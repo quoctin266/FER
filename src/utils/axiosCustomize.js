@@ -44,7 +44,9 @@ instance.interceptors.response.use(
           !error.config.headers[NO_RETRY_HEADER]
         ) {
           error.config.headers[NO_RETRY_HEADER] = "true";
-          let res = await getNewToken();
+
+          const refreshToken = store?.getState()?.auth?.refreshToken;
+          let res = await getNewToken({ refreshToken });
           if (res.status === 200) {
             const { username, email } = res.data.userCredentials;
             const { accessToken, refreshToken } = res.data;

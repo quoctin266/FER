@@ -16,14 +16,14 @@ const Dashboard = () => {
           className={`player-tab ${activeTab === "player" ? "active" : ""}`}
           onClick={() => setActiveTab("player")}
         >
-          Players
+          Orchids
         </Button>
         <Button
           variant="primary"
           className={`nation-tab ${activeTab === "nation" ? "active" : ""}`}
           onClick={() => setActiveTab("nation")}
         >
-          Nations
+          Categories
         </Button>
         <Button
           variant="primary"

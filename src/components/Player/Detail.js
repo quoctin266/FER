@@ -23,9 +23,9 @@ const PlayerDetail = () => {
         <Card.Body>
           <Card.Title className="film-title">{player?.name}</Card.Title>
           <div>
-            <div className="year">Club: {player?.club}</div>
-            <div className="country">Nation: {player?.nation?.name}</div>
-            <div className="info-title">Biography</div>
+            <div className="year">Origin: {player?.club}</div>
+            <div className="country">Category: {player?.nation?.name}</div>
+            <div className="info-title">Info</div>
             <div className="info">{player?.info}</div>
           </div>
         </Card.Body>

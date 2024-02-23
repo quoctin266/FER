@@ -72,7 +72,7 @@ const ManageNation = () => {
 
   return (
     <div className="manage-nation-container">
-      <div className="title">Manage Nations</div>
+      <div className="title">Manage Categories</div>
       <div className="list-nation">
         <Button variant="primary" className="mb-3" onClick={handleShowAdd}>
           Add new
@@ -130,7 +130,7 @@ const ManageNation = () => {
                 <Form.Label>Name</Form.Label>
                 <Form.Control
                   type="text"
-                  placeholder="Enter nation name"
+                  placeholder="Enter category name"
                   {...register("name", { required: "Name is required" })}
                 />
                 {errors.name && (
@@ -216,7 +216,7 @@ const ManageNation = () => {
             <Modal.Title>Confirm Delete</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Are you sure to delete this nation? <br />
+            Are you sure to delete this category? <br />
             Name: <b>{deletingNation?.name}</b> <br />
             Description: <b>{deletingNation?.description}</b> <br />
           </Modal.Body>

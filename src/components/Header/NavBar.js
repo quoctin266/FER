@@ -53,7 +53,7 @@ function NavBar() {
               Home
             </NavLink>
             <NavLink to="/players" className="nav-link">
-              Players
+              Orchids
             </NavLink>
             <NavLink to="/movies" className="nav-link">
               Movies

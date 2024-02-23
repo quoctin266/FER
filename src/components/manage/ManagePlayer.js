@@ -17,7 +17,8 @@ import {
 import { useForm } from "react-hook-form";
 import { getAllNation } from "../../service/nationService";
 import { postUploadFile, removeFile } from "../../service/fileService";
-import { Switch } from "@mui/material";
+import { Avatar, Card, CardContent, Rating, Switch } from "@mui/material";
+import moment from "moment";
 
 const FOLDER_TYPE = "image";
 const FOLDER_NAME = "players";
@@ -82,7 +83,8 @@ const ManagePlayer = () => {
     let res = await postCreatePlayer({ ...data, img: fileName });
     if (res.status === 201) {
       fetchAllPlayer();
-      toast.success(res.message);
+      toast.success("Add new successfully");
+      setChecked(false);
       handleCloseAdd();
     } else toast.error(res.error);
   };
@@ -98,7 +100,7 @@ const ManagePlayer = () => {
   const handleDelete = async () => {
     let res = await deletePlayer(deletingPlayer._id);
     if (res && res.status === 200) {
-      toast.success(res.message);
+      toast.success("Delete successfully");
       handleCloseDelete();
       fetchAllPlayer();
     } else toast.error(res.error);
@@ -131,7 +133,7 @@ const ManagePlayer = () => {
 
   return (
     <div className="manage-player-container">
-      <div className="title">Manage Players</div>
+      <div className="title">Manage Orchids</div>
       <div className="list-player">
         <Button variant="primary" className="mb-3" onClick={handleShowAdd}>
           Add new
@@ -139,10 +141,10 @@ const ManagePlayer = () => {
         <Table striped hover>
           <thead>
             <tr>
+              <th></th>
               <th>Name</th>
-              <th>Nation</th>
-              <th>Club</th>
-              <th>Goals</th>
+              <th>Category</th>
+              <th>Origin</th>
               <th>Detail</th>
             </tr>
           </thead>
@@ -151,11 +153,13 @@ const ManagePlayer = () => {
               listPlayer.length > 0 &&
               listPlayer.map((player) => {
                 return (
-                  <tr key={player._id}>
+                  <tr key={player._id} style={{ verticalAlign: "middle" }}>
+                    <td>
+                      <Image src={player.imageUrl} rounded width={100} />
+                    </td>
                     <td>{player.name}</td>
                     <td>{player.nation?.name}</td>
                     <td>{player.club ? player.club : "-"}</td>
-                    <td>{player.goals}</td>
                     <td>
                       <Button
                         variant="danger"
@@ -208,11 +212,11 @@ const ManagePlayer = () => {
                 </Col>
 
                 <Col>
-                  <Form.Label>Club</Form.Label>
+                  <Form.Label>Origin</Form.Label>
                   <Form.Control
                     type="text"
-                    placeholder="Enter club"
-                    {...register("club", { required: "Club is required" })}
+                    placeholder="Enter origin"
+                    {...register("club", { required: "Origin is required" })}
                   />
                   {errors.club && (
                     <div style={{ color: "red" }}>{errors.club.message}</div>
@@ -222,9 +226,11 @@ const ManagePlayer = () => {
 
               <Row className="mb-3">
                 <Col>
-                  <Form.Label>Nation</Form.Label>
+                  <Form.Label>Category</Form.Label>
                   <Form.Select
-                    {...register("nation", { required: "Nation is required" })}
+                    {...register("nation", {
+                      required: "Category is required",
+                    })}
                   >
                     <option value="" disabled hidden>
                       Open this select menu
@@ -245,6 +251,16 @@ const ManagePlayer = () => {
                 </Col>
 
                 <Col>
+                  <Form.Label>Image</Form.Label>
+                  <Form.Control
+                    type="file"
+                    onChange={(e) => handleUploadFile(e.target.files[0])}
+                  />
+                  {fileMissing && (
+                    <div style={{ color: "red" }}>No file uploaded yet</div>
+                  )}
+                </Col>
+                {/* <Col>
                   <Form.Label>Goals</Form.Label>
                   <Form.Control
                     type="number"
@@ -258,23 +274,12 @@ const ManagePlayer = () => {
                   {errors.goals && (
                     <div style={{ color: "red" }}>{errors.goals.message}</div>
                   )}
-                </Col>
+                </Col> */}
               </Row>
 
               <Row className="mb-3">
                 <Col>
-                  <Form.Label>Image</Form.Label>
-                  <Form.Control
-                    type="file"
-                    onChange={(e) => handleUploadFile(e.target.files[0])}
-                  />
-                  {fileMissing && (
-                    <div style={{ color: "red" }}>No file uploaded yet</div>
-                  )}
-                </Col>
-
-                <Col>
-                  <div>Captain Status</div>
+                  <div>Is Natural</div>
                   <Switch
                     checked={checked}
                     onChange={handleChange}
@@ -326,13 +331,10 @@ const ManagePlayer = () => {
                   <b>Name: </b> {detailPlayer.name}
                 </div>
                 <div className="des">
-                  <b>Nation: </b> {detailPlayer.nation?.name}
+                  <b>Category: </b> {detailPlayer.nation?.name}
                 </div>
                 <div className="des">
-                  <b>Goals: </b> {detailPlayer.goals}
-                </div>
-                <div className="des">
-                  <b>Club: </b>
+                  <b>Origin: </b>
                   {detailPlayer.club}
                 </div>
                 <div>
@@ -340,6 +342,74 @@ const ManagePlayer = () => {
                 </div>
                 <div className="des">{detailPlayer.info}</div>
               </div>
+            </div>
+
+            <div style={{ fontSize: "1.1rem" }}>
+              <b>Comments</b>
+            </div>
+            <div>
+              {detailPlayer?.comments?.map((item) => {
+                return (
+                  <Card key={item._id} className="review-item mt-3">
+                    <CardContent>
+                      <Row className="align-items-center">
+                        <Col xs={1} className="me-4">
+                          <Avatar>{item.author?.username?.charAt(0)}</Avatar>
+                        </Col>
+                        <Col xs={10} className="ms-0">
+                          <div className="d-flex align-items-center justify-content-between">
+                            <b>{item.author?.username}</b>
+                          </div>
+                          <div className="time">
+                            {moment().diff(moment(item.createdAt), "days") >
+                              0 &&
+                              `${moment().diff(
+                                moment(item.createdAt),
+                                "days"
+                              )} days ago`}
+
+                            {moment().diff(moment(item.createdAt), "hours") >
+                              0 &&
+                              moment().diff(moment(item.createdAt), "hours") <
+                                24 &&
+                              `${moment().diff(
+                                moment(item.createdAt),
+                                "hours"
+                              )} hours ago`}
+
+                            {moment().diff(moment(item.createdAt), "minutes") >
+                              0 &&
+                              moment().diff(moment(item.createdAt), "minutes") <
+                                60 &&
+                              `${moment().diff(
+                                moment(item.createdAt),
+                                "minutes"
+                              )} minutes ago`}
+
+                            {moment().diff(moment(item.createdAt), "seconds") >
+                              0 &&
+                              moment().diff(moment(item.createdAt), "seconds") <
+                                60 &&
+                              `${moment().diff(
+                                moment(item.createdAt),
+                                "seconds"
+                              )} seconds ago`}
+                          </div>
+                        </Col>
+                      </Row>
+
+                      <Rating
+                        className="my-2"
+                        name="read-only"
+                        value={item.rating}
+                        readOnly
+                      />
+
+                      <div className="feedback">{item.comment}</div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           </Modal.Body>
           <Modal.Footer>
@@ -359,10 +429,10 @@ const ManagePlayer = () => {
             <Modal.Title>Confirm Delete</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Are you sure to delete this player? <br />
+            Are you sure to delete this orchid? <br />
             Name: <b>{deletingPlayer.name}</b> <br />
-            Club: <b>{deletingPlayer.club}</b> <br />
-            Nation: <b>{deletingPlayer.nation?.name}</b>
+            Origin: <b>{deletingPlayer.club}</b> <br />
+            Category: <b>{deletingPlayer.nation?.name}</b>
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={handleCloseDelete}>

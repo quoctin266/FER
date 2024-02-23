@@ -51,12 +51,16 @@ const Player = () => {
             return (
               <div className="player" key={player._id}>
                 <Card style={{ width: "18rem" }}>
-                  <Card.Img variant="top" src={player.imageUrl} />
+                  <Card.Img
+                    variant="top"
+                    src={player.imageUrl}
+                    style={{ height: "190px" }}
+                  />
                   <ListGroup className="list-group-flush">
                     <ListGroup.Item className="name">
                       {player.name}
                     </ListGroup.Item>
-                    <ListGroup.Item className="team">
+                    <ListGroup.Item className="team" style={{ height: "80px" }}>
                       {player.club}
                     </ListGroup.Item>
                     <ListGroup.Item

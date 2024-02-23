@@ -24,8 +24,12 @@ const postCreateComment = async (data) => {
   return await axios.post("comments", data);
 };
 
-const getAllComments = async (player) => {
-  return await axios.get(`comments?${player ? `player=${player}&` : ""}`);
+const getAllComments = async (params) => {
+  return await axios.get(
+    `comments?${params.player ? `player=${params.player}&` : ""}${
+      params.author ? `author=${params.author}&` : ""
+    }`
+  );
 };
 
 const deleteComment = async (id) => {

@@ -73,7 +73,7 @@ const EditNation = (props) => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter nation name"
+                placeholder="Enter category name"
                 {...register("name", { required: "Name is required" })}
               />
               {errors.name && (
